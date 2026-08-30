@@ -1,0 +1,110 @@
+name: 🐛 Bug report
+description: Something in susfile does not behave the way it should.
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report.
+
+        **Not a bug — a security vulnerability?** A crafted file that crashes,
+        hangs or OOMs susfile, or any outbound network connection, goes through
+        [SECURITY.md](https://github.com/kawaiipantsu/susfile/blob/main/SECURITY.md),
+        not here.
+
+  - type: textarea
+    id: version
+    attributes:
+      label: susfile version
+      description: Paste the complete output of `susfile version`.
+      render: text
+      placeholder: |
+        susfile v0.1.0
+        commit:  b7829b9
+        built:   2026-08-30T16:42:47Z
+        go:      go1.27.0
+        os/arch: linux/amd64
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating system and terminal
+      description: Distribution and version, plus the terminal emulator if the problem is visual.
+      placeholder: "Debian 12 (kernel 6.1), GNOME Terminal / tmux"
+    validations:
+      required: true
+
+  - type: input
+    id: install
+    attributes:
+      label: How did you get this binary?
+      placeholder: "make build from source / susfile_0.1.0_linux_amd64.tar.gz / susfile_0.1.0_amd64.deb"
+    validations:
+      required: true
+
+  - type: input
+    id: subject
+    attributes:
+      label: The file you were analysing
+      description: Type, rough size, and how it was produced. Do not attach anything sensitive.
+      placeholder: "UPX-packed PE32+, ~2.1 MiB, from a malware sample zip"
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: The exact command line, and the smallest file that still shows the problem.
+      placeholder: |
+        1. susfile --no-tui ./sample.bin
+        2. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected to happen
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: What actually happened
+      description: Full error text or a screenshot of the TUI. Re-run with `--no-tui` if it is a rendering issue vs. an analysis issue.
+      render: text
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which area does this affect?
+      options:
+        - Not sure
+        - File map / block classification
+        - Entropy / statistics
+        - Magic header / MIME / type detection
+        - Hashes
+        - ELF / PE / Mach-O parsing
+        - Strings extraction
+        - TUI rendering / layout / colour
+        - Plain / JSON output
+        - Build / cross-compilation / .deb packaging
+        - Documentation
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues and this has not been reported.
+          required: true
+        - label: This is not a security vulnerability (those go through SECURITY.md).
+          required: true

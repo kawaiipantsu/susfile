@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 💬 Questions and general discussion
+    url: https://github.com/kawaiipantsu/susfile/discussions
+    about: Setup help, how to read a file map, workflow ideas — anything that is not a defect.
+  - name: 🔐 Report a security vulnerability
+    url: https://github.com/kawaiipantsu/susfile/blob/main/SECURITY.md
+    about: susfile parses untrusted files. Please report crashes-as-exploits and any network egress privately, not in a public issue.

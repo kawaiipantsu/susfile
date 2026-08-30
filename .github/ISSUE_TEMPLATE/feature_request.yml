@@ -1,0 +1,78 @@
+name: ✨ Feature request
+description: Suggest a capability or a change to how susfile behaves.
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before you write this up: **[PROJECT.md](https://github.com/kawaiipantsu/susfile/blob/main/PROJECT.md)**
+        is the authoritative spec. Your idea may already be planned, or it may be
+        an explicit non-goal (§10): disassembly, file editing, malware
+        signatures, archive extraction, **anything using the network**, a config
+        file, or Windows/macOS release artifacts.
+
+        That does not disqualify an idea — it just changes the conversation.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you trying to solve?
+      description: Describe the situation, not the solution. What were you analysing, what did the current output not tell you?
+      placeholder: |
+        I get handed firmware blobs and I want to see at a glance where the
+        bootloader ends and the compressed rootfs begins. The file map shows the
+        boundary but I can't tell which offset it is.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like susfile to do?
+      description: Be concrete. If it is a flag, show the command line. If it is a view or a glyph class, sketch it.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What else did you consider?
+      description: Including "do nothing" and "use another tool". Which alternatives you rejected, and why, is usually the most useful part.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which area does this touch?
+      options:
+        - Not sure
+        - File map / block classification
+        - New glyph class / classifier tuning
+        - Entropy / statistics
+        - Magic header / MIME / type detection
+        - ELF / PE / Mach-O parsing
+        - Strings extraction
+        - A new Tab view
+        - Plain / JSON output
+        - TUI interaction / keybindings / colour
+        - Build / packaging / release
+        - Documentation
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Does this fit the project's constraints?
+      description: Unticked boxes are fine — they are prompts, not requirements.
+      options:
+        - label: It does not require the network (susfile is offline by design).
+        - label: It does not require cgo or a heavy new dependency.
+        - label: It keeps measurement in internal/analyze and rendering separate.
+        - label: It does not make susfile write to the analysed file.
+
+  - type: checkboxes
+    id: help
+    attributes:
+      label: Would you like to implement it?
+      options:
+        - label: I would be willing to open a pull request for this.

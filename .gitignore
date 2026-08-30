@@ -1,0 +1,24 @@
+# Binaries
+/susfile
+*.test
+*.out
+
+# Build / release output
+/dist/
+/build/
+
+# Coverage
+coverage.out
+coverage.html
+
+# Go workspace
+go.work
+go.work.sum
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~

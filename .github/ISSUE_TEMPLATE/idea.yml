@@ -1,0 +1,32 @@
+name: 💡 Idea / discussion starter
+description: A rougher thought — a visualisation, a heuristic, a direction. Not a fully-formed feature request.
+labels: ["type:idea", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For half-formed ideas and "what if susfile could…". If you would rather
+        talk it through first, the
+        [Discussions tab](https://github.com/kawaiipantsu/susfile/discussions)
+        is the better home.
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: The idea
+      description: One or two paragraphs. What is it, and what would it let someone see or do that they can't today?
+    validations:
+      required: true
+
+  - type: textarea
+    id: sketch
+    attributes:
+      label: Rough sketch (optional)
+      description: ASCII mock-up, a glyph legend, an example command — whatever makes it concrete.
+      render: text
+
+  - type: textarea
+    id: prior
+    attributes:
+      label: Prior art
+      description: Other tools that do something like this, papers, blog posts.
