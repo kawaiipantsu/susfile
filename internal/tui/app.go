@@ -102,6 +102,46 @@ func Run(path string, opt analyze.Options, color bool) error {
 	return err
 }
 
+// Frame analyses path and returns a single rendered frame at size w×h with the
+// named view active ("map", "entropy", "histogram", "hex", "strings"). It runs
+// no Bubble Tea program and needs no terminal — it is used for documentation
+// screenshots and golden tests.
+func Frame(path string, opt analyze.Options, w, h int, viewName string, color bool) (string, error) {
+	res, err := analyze.Analyze(context.Background(), path, opt, nil)
+	if err != nil {
+		return "", err
+	}
+	m := Model{theme: newTheme(color), path: path, prog: progress.New(progressOpts(color)...), spin: spinner.New()}
+	nm, _ := m.Update(tea.WindowSizeMsg{Width: w, Height: h})
+	m = nm.(Model)
+	nm, _ = m.Update(doneMsg{res: res})
+	m = nm.(Model)
+	nm, _ = m.Update(rawMsg{data: loadRaw(path, opt)})
+	m = nm.(Model)
+	for v := view(0); v < numViews; v++ {
+		if v.title() == viewNameTitle(viewName) {
+			m.view = v
+		}
+	}
+	return m.View(), nil
+}
+
+func viewNameTitle(s string) string {
+	switch s {
+	case "map":
+		return "Map"
+	case "entropy":
+		return "Entropy"
+	case "histogram":
+		return "Histogram"
+	case "hex":
+		return "Hex"
+	case "strings":
+		return "Strings"
+	}
+	return "Map"
+}
+
 func progressOpts(color bool) []progress.Option {
 	if color {
 		return []progress.Option{progress.WithScaledGradient("#3b5bdb", "#e03131"), progress.WithoutPercentage()}
