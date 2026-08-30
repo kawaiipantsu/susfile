@@ -115,8 +115,9 @@ handled, formatted.
 ## Current state
 
 Done: repository foundation, Git Flow, CI, the cross-compile Makefile + `.deb`
-packaging, the analysis engine (`internal/analyze`: entropy, hashes, ent-style
-stats, magic table, MIME, ELF/PE/Mach-O, micro-blocks + classifier, strings,
-verdict) and the plain/JSON reporters (`internal/report`). `susfile --no-tui`
-and `susfile --json` are wired. Not started: the TUI (`feature/tui`), the docs
-polish + README screenshot, and the v0.1.0 release.
+packaging, the analysis engine (`internal/analyze`), the plain/JSON reporters
+(`internal/report`), and the interactive TUI (`internal/tui`: logo + info box,
+the file-map centrepiece with an inspector cursor, entropy/histogram/hex/strings
+Tab views, and the progress + `⟦THUGS⟧ (c) 2026` footer). `susfile <file>`
+launches the TUI; `--no-tui` / `--json` for scripts. Next: a real README
+screenshot + docs polish, then the v0.1.0 release.
