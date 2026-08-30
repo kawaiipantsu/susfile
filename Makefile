@@ -47,8 +47,12 @@ help: ## Show available targets
 	@echo "  install            go install into GOPATH/bin"
 	@echo "  clean              Remove generated files"
 	@echo ""
-	@echo "Release (see feature/build-system):"
-	@echo "  dist deb snapshot release-check security"
+	@echo "Release:"
+	@echo "  dist               tar.gz per arch + SHA256SUMS"
+	@echo "  deb                Four .deb packages (amd64, i386, arm64, armhf)"
+	@echo "  snapshot           dist + deb with a snapshot version"
+	@echo "  release-check      Verify the tree is ready to tag"
+	@echo "  security           govulncheck when installed"
 	@echo ""
 	@echo "Version: $(VERSION)  Commit: $(COMMIT)"
 
@@ -143,3 +147,27 @@ generate: ## Run go generate
 security: ## Run govulncheck when installed
 	@if command -v govulncheck >/dev/null 2>&1; then govulncheck ./...; \
 	else echo "govulncheck not installed: go install golang.org/x/vuln/cmd/govulncheck@latest"; fi
+
+## ---------------------------------------------------------------- release
+
+.PHONY: man
+man: ## Gzip the man page into dist/
+	@mkdir -p $(DIST)
+	@gzip -9 -n -c packaging/man/$(BINARY).1 > $(DIST)/$(BINARY).1.gz
+	@echo "wrote $(DIST)/$(BINARY).1.gz"
+
+.PHONY: dist
+dist: build-linux man ## tar.gz per arch + SHA256SUMS
+	@VERSION=$(VERSION) BINARY=$(BINARY) DIST=$(DIST) scripts/package.sh
+
+.PHONY: deb
+deb: build-linux man ## Four .deb packages (amd64, i386, arm64, armhf)
+	@VERSION=$(VERSION) BINARY=$(BINARY) DIST=$(DIST) scripts/package-deb.sh
+
+.PHONY: snapshot
+snapshot: ## dist + deb with a snapshot version
+	@$(MAKE) --no-print-directory dist deb VERSION=$(VERSION)-snapshot.$(COMMIT)
+
+.PHONY: release-check
+release-check: fmt-check vet lint test build-linux ## Verify the tree is ready to tag
+	@VERSION=$(VERSION) scripts/release-check.sh
