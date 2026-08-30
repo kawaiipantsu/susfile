@@ -73,9 +73,10 @@ docs/                        architecture.md, analysis.md, tui.md, packaging.md,
 returns a `Result` with: file metadata; magic match + leading-bytes hex; MIME +
 extension guess; hashes; `Histogram [256]uint64` + printable/null/high ratios;
 `Stats` (chi-square, arithmetic mean, Monte-Carlo π estimate, serial
-correlation); `GlobalEntropy float64`; `MicroBlocks []MicroBlock` (fixed count,
-**4096**); `BinFmt *BinFmt` (nil if not an executable); `Strings []StringHit`
-(capped); `Verdict` (text + kaomoji).
+correlation); `GlobalEntropy float64`; `MicroBlocks []MicroBlock` (up to
+**4096**, fewer for small files so each block spans a sensible number of bytes);
+`BinFmt *BinFmt` (nil if not an executable); `Strings []StringHit` (capped);
+`Verdict` (text + kaomoji).
 
 A Go `error` is returned only when the file cannot be read at all (not found,
 permission denied, is a directory, non-regular without `--allow-special`).
@@ -89,8 +90,10 @@ populated `Result` with `Verdict.Kaomoji == "¯\\_(ツ)_/¯"`.
 - The full-buffer passes (histogram, micro-block scan, strings) read at most
   `--max-bytes` (default **256 MiB**). Above that, micro-blocks are sampled
   (seek + read a window per block) rather than the file being materialised.
-- `MicroBlocks` always has 4096 entries regardless of size; for a file smaller
-  than 4096 bytes, trailing blocks are zero-length and classed `·`.
+- `MicroBlocks` holds `clamp(size/16, 1, 4096)` entries. Each block's entropy
+  and byte ratios are measured over a window of at least 4096 bytes centred on
+  the block (clamped to the file), so the figures are meaningful even when a
+  block itself is only tens of bytes wide. See `docs/analysis.md`.
 
 ### 5.3 MicroBlock and Class
 

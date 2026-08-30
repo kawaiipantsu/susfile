@@ -24,10 +24,10 @@ Magic header · MIME & type · entropy · hashes · ELF/PE/Mach-O structure — 
 <br/>
 
 > [!IMPORTANT]
-> **susfile is in early development.** The repository foundation, build system and
-> cross-compilation are in place; the analysis engine and TUI are being built on
-> `develop` behind feature branches. Today `susfile version` is the working entry
-> point. Follow the [roadmap](#roadmap).
+> **susfile is in early development.** The build system and the full analysis
+> engine are in place: `susfile --no-tui <file>` and `susfile --json <file>`
+> work today and produce the ASCII file map, stats and verdict. The interactive
+> TUI is being built on `develop`. Follow the [roadmap](#roadmap).
 
 <br/>
 
@@ -226,14 +226,14 @@ make security                # govulncheck when installed
 | | Milestone | Status |
 |:--:|:--|:--|
 | 0 | Repository foundation + Git Flow + CI | ✅ done |
-| 1 | Build system: 4-arch matrix + `.deb` packaging | 🟡 in progress |
-| 2 | Core analysis engine: entropy, hashes, stats, magic, MIME | ⬜ next |
-| 3 | Micro-block scan + block classifier | ⬜ next |
-| 4 | ELF / PE / Mach-O structural summary | ⬜ planned |
-| 5 | String extraction (ASCII + UTF-16LE) | ⬜ planned |
-| 6 | Plain + JSON reporters | ⬜ planned |
-| 7 | TUI shell (logo / info box / footer + THUGS stamp) | ⬜ planned |
-| 8 | **File-map main panel** + inspector | ⬜ planned |
+| 1 | Build system: 4-arch matrix + `.deb` packaging | ✅ done |
+| 2 | Core analysis engine: entropy, hashes, stats, magic, MIME | ✅ done |
+| 3 | Micro-block scan + block classifier | ✅ done |
+| 4 | ELF / PE / Mach-O structural summary | ✅ done |
+| 5 | String extraction (ASCII + UTF-16LE) | ✅ done |
+| 6 | Plain + JSON reporters | ✅ done |
+| 7 | TUI shell (logo / info box / footer + THUGS stamp) | ⬜ next |
+| 8 | **File-map main panel** + inspector | ⬜ next |
 | 9 | Entropy / histogram / hex / strings Tab views | ⬜ planned |
 | 10 | v0.1.0 release hardening + GitHub release with `.deb` | ⬜ planned |
 

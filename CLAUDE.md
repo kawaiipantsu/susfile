@@ -57,10 +57,10 @@ cmd/susfile  →  internal/analyze  →  analyze.Result
 
 ### Things that will bite you
 
-- **The micro-block count is fixed (4096), the grid is not.** `analyze` scans a
-  resolution-independent set of blocks once; the TUI and the plain reporter both
-  aggregate that set down to whatever grid they are drawing. Never make
-  `analyze` depend on terminal size.
+- **The micro-block count depends on file size (≤ 4096), the grid does not.**
+  `analyze` scans a resolution-independent set of blocks once; the TUI and the
+  plain reporter both `Downsample` that set to whatever grid they draw. Never
+  make `analyze` depend on terminal size.
 - **A recoverable problem is a populated `Result`, not an `error`.** A truncated
   file, an unparseable PE, an unknown magic — these produce a `Result` with the
   fields that could be filled and a verdict of `¯\_(ツ)_/¯`. A Go `error` is for
@@ -114,6 +114,9 @@ handled, formatted.
 
 ## Current state
 
-Done: repository foundation, Git Flow, CI, the cross-compile Makefile, and the
-`susfile version` entry point. In progress: `.deb` packaging (feature/build-
-system). Not started: the analysis engine, the reporters and the TUI.
+Done: repository foundation, Git Flow, CI, the cross-compile Makefile + `.deb`
+packaging, the analysis engine (`internal/analyze`: entropy, hashes, ent-style
+stats, magic table, MIME, ELF/PE/Mach-O, micro-blocks + classifier, strings,
+verdict) and the plain/JSON reporters (`internal/report`). `susfile --no-tui`
+and `susfile --json` are wired. Not started: the TUI (`feature/tui`), the docs
+polish + README screenshot, and the v0.1.0 release.

@@ -29,3 +29,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `install.sh`: arch-detecting installer that verifies the download against
   `SHA256SUMS` and never calls `sudo`.
 - `susfile.1` man page; `docs/packaging.md`.
+- Analysis engine (`internal/analyze`): streaming MD5/SHA-1/SHA-256/CRC-32,
+  whole-file Shannon entropy, 256-bin histogram with byte-class fractions,
+  ent-style statistics (mean, chi-square, Monte-Carlo π, serial correlation),
+  a curated magic-signature table plus pure-Go MIME detection, ELF/PE/Mach-O
+  structure with per-section entropy (every parser wrapped against panics),
+  ASCII + UTF-16LE string extraction, and a windowed micro-block scan
+  (`clamp(size/16, 1, 4096)` blocks) with an 11-class content classifier and a
+  kaomoji verdict. Nothing is written and no network call is made.
+- Reporters (`internal/report`): `susfile --no-tui` plain text with an ASCII
+  class map, legend and entropy sparkline; `susfile --json` with the stable
+  `susfile.report/v1` schema (full result + rendered map + legend).
+- `susfile <file>` CLI: `--no-tui`, `--json`, `--strings-min`, `--max-bytes`,
+  `--map-size`, `--allow-special`, `--no-color`, and `-` for stdin.
+- `docs/analysis.md` (the classifier spec) and `docs/architecture.md`.
