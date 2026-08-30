@@ -26,7 +26,7 @@ Magic header · MIME & type · entropy · hashes · ELF/PE/Mach-O structure — 
 <br/>
 
 > [!NOTE]
-> **v0.1.0 is out** — [release](https://github.com/kawaiipantsu/susfile/releases/tag/v0.1.0)
+> **v0.1.1 is out** — [release](https://github.com/kawaiipantsu/susfile/releases/tag/v0.1.1)
 > with static Linux binaries and `.deb` packages for `amd64` / `i386` / `arm64` /
 > `armhf`. It is a young tool: the block classifier and the verdict are
 > heuristics (see [`docs/analysis.md`](docs/analysis.md) and the
@@ -133,7 +133,7 @@ curl -fsSL https://raw.githubusercontent.com/kawaiipantsu/susfile/main/install.s
 
 Detects your arch, verifies the download against `SHA256SUMS`, installs to
 `~/.local/bin` (or `/usr/local/bin` if writable). Never calls `sudo`. Pin a
-version with `SUSFILE_VERSION=v0.1.0`.
+version with `SUSFILE_VERSION=v0.1.1`.
 
 ### 📦 Debian / Ubuntu
 
@@ -249,7 +249,7 @@ make security                # govulncheck when installed
 | 7 | TUI shell (logo / info box / footer + THUGS stamp) | ✅ done |
 | 8 | **File-map main panel** + inspector | ✅ done |
 | 9 | Entropy / histogram / hex / strings Tab views | ✅ done |
-| 10 | **v0.1.0** — tagged, four `.tar.gz` + four `.deb` + `SHA256SUMS` | ✅ [released](https://github.com/kawaiipantsu/susfile/releases/tag/v0.1.0) |
+| 10 | **v0.1.0 / v0.1.1** — tagged, four `.tar.gz` + four `.deb` + `SHA256SUMS` | ✅ [released](https://github.com/kawaiipantsu/susfile/releases/latest) |
 | — | Next: classifier tuning, byteplot view, compare mode — see [issues](https://github.com/kawaiipantsu/susfile/issues?q=label%3Atype%3Aidea) | ⬜ |
 
 </div>

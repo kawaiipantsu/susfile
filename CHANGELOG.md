@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-08-31
+
+### Changed
+
+- New logo. The TUI's top-left box now shows a magnifier over a fingerprint with
+  the `s u s` / `f i l e` wordmark, a `forensic` tag and a `-=[ 53 . 55 . 53 ]=-`
+  hex-for-SUS line, tinted to match the project mark. The logo box widened from
+  14 to 24 columns. The README leads with the full `susfile_logo.png` banner.
+
+### Fixed
+
+- The `Release` workflow extracted the first `## [` section of `CHANGELOG.md`
+  for the GitHub release body, which is the empty `## [Unreleased]` heading after
+  a release cut — so `v0.1.0`'s notes were published blank. It now extracts the
+  section matching the tag's version.
+
 ## [0.1.0] - 2026-08-30
 
 First release. susfile reads one file and shows what it is — magic header,
@@ -74,5 +90,6 @@ connections, and sends no telemetry.
 - **`.deb` packages are unsigned**; verify downloads against `SHA256SUMS`.
 - **Linux only.** macOS and Windows are not release targets.
 
-[Unreleased]: https://github.com/kawaiipantsu/susfile/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/kawaiipantsu/susfile/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/kawaiipantsu/susfile/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/kawaiipantsu/susfile/releases/tag/v0.1.0
