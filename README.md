@@ -67,29 +67,22 @@ answer:
 
 ## 🖥️ What it looks like
 
-```
-┌───────────────────────────────── susfile ──────────────────────────────────┐
-│ ┌────────────┐ ┌────────────────────────────────────────────────────────┐   │
-│ │  ▄▄  ▄ ▄   │ │ Type       PE32+ executable                            │   │
-│ │  ▀▀▄ █ █   │ │ Magic      4d 5a 90 00                                 │   │
-│ │  ▄▄▀ ▀▄▀   │ │ Entropy    7.91  ███████████████▊                      │   │
-│ │  s u s     │ │ Strings    1,284          Sections   6                 │   │
-│ │  f i l e   │ │ SHA-256    9f2c…3ab1                                   │   │
-│ │            │ │ Verdict    ಠ_ಠ  likely packed / high-entropy          │   │
-│ └────────────┘ └────────────────────────────────────────────────────────┘   │
-├────────────────────────────────────────────────────────────────────────────┤
-│  Map · Entropy · Histogram · Hex · Strings          (Tab to switch)         │
-│  HHHHPPPPPPPPPPPPFFFFFFFFFFFFFFFFFFFFCCCCCCCCCCCCCCCCCCCCCCCCZZZZZZZZ····    │
-│  PPPPPPFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFCCCCCCCCCCCCCCCCCCCCCCCCZZZZZZZZ····    │
-│  SSSSSSSSSSSSPPPPPPPPPPPPPPPPPPPPPPPPCCCCCCCCCCCCCCCCCCCCEEEEEEEEEEEE····    │
-│  DDDDDDDDDDDDDDDDDDDDRRRRRRRRRRRRRRRRCCCCCCCCCCCCCCCCCCCCEEEEEEEEEEEE····    │
-│  ▸ 0x8c40–0x9040  entropy 7.88  class C (code)  top 0x00 0xff 0x48          │
-│  · null  P text  F source  S strings  C code  Z compressed  E encrypted     │
-├────────────────────────────────────────────────────────────────────────────┤
-│  [Tab] view  [↑↓←→] inspect  [enter] jump to hex  [r] rescan  [q] quit      │
-│  ▓▓▓▓▓▓▓▓▓▓▓░░░░░  analyzing blocks…                     ⟦THUGS⟧ (c) 2026   │
-└────────────────────────────────────────────────────────────────────────────┘
-```
+Real renders (`assets/screenshot.sh`), not mock-ups — `susfile /bin/ls`:
+
+<div align="center">
+
+**The file map** — one glyph per region, coloured by entropy; the inspector reads out the hovered block
+
+<img src="assets/screenshots/tui-map.svg" width="92%" alt="susfile file map view"/>
+
+<br/><br/>
+
+**Hex** — jump here from any block on the map · **Strings** — offsets and encoding
+
+<img src="assets/screenshots/tui-hex.svg" width="46%" alt="susfile hex view"/>
+<img src="assets/screenshots/tui-strings.svg" width="46%" alt="susfile strings view"/>
+
+</div>
 
 <br/>
 
@@ -97,9 +90,10 @@ answer:
 
 ## 🧠 How the file map is read
 
-susfile splits the file into a fixed number of micro-blocks, measures each one
-(Shannon entropy, printable / null / high-bit ratios, distinct-byte count, and —
-for executables — which section it falls in), and assigns a **class**:
+susfile splits the file into up to 4096 micro-blocks (fewer for small files) and
+measures each one — Shannon entropy over a ≥4 KiB window so the figure is
+meaningful, printable / null / high-bit ratios, distinct-byte count, and, for
+executables, the section it falls in — then assigns a **class**:
 
 | Glyph | Class | Typical trigger |
 |:--:|:--|:--|
@@ -108,24 +102,41 @@ for executables — which section it falls in), and assigns a **class**:
 | `F` | source / functions | printable **and** dense in code tokens (`{ } ( ) ; =`, keywords) |
 | `S` | string table | many short NUL-terminated runs |
 | `C` | machine code | non-printable, mid-high entropy, in a `.text`-like section |
-| `M` | media / packed image | entropy ~6–7.5, structured |
-| `Z` | compressed | entropy ~7.5–8.0 |
-| `E` | encrypted | entropy ≈ 8.0 with a flat histogram |
-| `H` | header / metadata | structured bytes near a known offset |
+| `M` | media / packed image | high-ish entropy, structured |
+| `Z` | compressed | very high entropy |
+| `E` | encrypted | near-perfect entropy with a full byte set (large samples only) |
+| `H` | header / metadata | the first block of the file |
 | `D` | data | none of the above |
 | `R` | repetitive | very low entropy, few distinct bytes, not null |
 
-Colour/shade encodes the block's entropy (blue → cyan → green → yellow → red).
-`--no-color` falls back to `░ ▒ ▓ █` block shading. The **verdict** kaomoji
-summarises the whole file: `^_^` clean text/source · `•_•` ordinary binary ·
+Colour encodes the block's entropy (blue → cyan → green → yellow → red);
+`--no-color` falls back to `░ ▒ ▓ █` shading. `E` vs `Z` cannot be told apart by
+entropy below tens of KiB, so small high-entropy regions read as `Z` and the
+**verdict** carries the nuance: `^_^` clean text/source · `•_•` ordinary binary ·
 `ಠ_ಠ` high-entropy / likely packed · `¯\_(ツ)_/¯` truncated or malformed ·
-`-_-` empty.
+`-_-` empty. Full rules: [`docs/analysis.md`](docs/analysis.md).
 
 <br/>
 
 <a id="install"></a>
 
 ## 📦 Install
+
+### ⚡ One line (Linux)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kawaiipantsu/susfile/main/install.sh | sh
+```
+
+Detects your arch, verifies the download against `SHA256SUMS`, installs to
+`~/.local/bin` (or `/usr/local/bin` if writable). Never calls `sudo`. Pin a
+version with `SUSFILE_VERSION=v0.1.0`.
+
+### 📦 Debian / Ubuntu
+
+```bash
+sudo dpkg -i susfile_<version>_amd64.deb    # or _i386 / _arm64 / _armhf
+```
 
 ### 🔨 From source
 
