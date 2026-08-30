@@ -299,7 +299,7 @@ func (m Model) View() string {
 	t := m.theme
 
 	// Top: logo box | info box.
-	logoBox := t.border.Width(l.logoW - 2).Height(l.topH - 2).Render(renderLogo(l.logoW-2, l.topH-2))
+	logoBox := t.border.Width(l.logoW - 2).Height(l.topH - 2).Render(m.renderLogo(l.logoW-2, l.topH-2))
 	infoW := m.w - l.logoW
 	infoBox := t.border.Width(infoW - 2).Height(l.topH - 2).Render(m.renderInfo(infoW-2, l.topH-2))
 	top := lipgloss.JoinHorizontal(lipgloss.Top, logoBox, infoBox)

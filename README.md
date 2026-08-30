@@ -1,6 +1,8 @@
 <div align="center">
 
-# `susfile`
+<img src="assets/logo/susfile_logo.png" alt="susfile — forensic file analysis tool" width="360"/>
+
+# susfile
 
 **A CLI file-forensics visualiser — see what a file *is* at a glance.**
 
