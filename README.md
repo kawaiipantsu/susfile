@@ -24,10 +24,10 @@ Magic header · MIME & type · entropy · hashes · ELF/PE/Mach-O structure — 
 <br/>
 
 > [!IMPORTANT]
-> **susfile is in early development.** The build system and the full analysis
-> engine are in place: `susfile --no-tui <file>` and `susfile --json <file>`
-> work today and produce the ASCII file map, stats and verdict. The interactive
-> TUI is being built on `develop`. Follow the [roadmap](#roadmap).
+> **susfile is in early development.** The analysis engine and the interactive
+> TUI both work today — `susfile <file>` for the TUI, `susfile --no-tui` /
+> `--json` for scripts. What remains before v0.1.0 is release hardening and a
+> tagged build with `.deb` packages. Follow the [roadmap](#roadmap).
 
 <br/>
 
@@ -232,10 +232,10 @@ make security                # govulncheck when installed
 | 4 | ELF / PE / Mach-O structural summary | ✅ done |
 | 5 | String extraction (ASCII + UTF-16LE) | ✅ done |
 | 6 | Plain + JSON reporters | ✅ done |
-| 7 | TUI shell (logo / info box / footer + THUGS stamp) | ⬜ next |
-| 8 | **File-map main panel** + inspector | ⬜ next |
-| 9 | Entropy / histogram / hex / strings Tab views | ⬜ planned |
-| 10 | v0.1.0 release hardening + GitHub release with `.deb` | ⬜ planned |
+| 7 | TUI shell (logo / info box / footer + THUGS stamp) | ✅ done |
+| 8 | **File-map main panel** + inspector | ✅ done |
+| 9 | Entropy / histogram / hex / strings Tab views | ✅ done |
+| 10 | v0.1.0 release hardening + GitHub release with `.deb` | ⬜ next |
 
 </div>
 

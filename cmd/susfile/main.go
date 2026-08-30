@@ -13,6 +13,7 @@ import (
 
 	"github.com/kawaiipantsu/susfile/internal/analyze"
 	"github.com/kawaiipantsu/susfile/internal/report"
+	"github.com/kawaiipantsu/susfile/internal/tui"
 	"github.com/kawaiipantsu/susfile/internal/version"
 )
 
@@ -68,17 +69,25 @@ func run(args []string, stdout, stderr io.Writer) int {
 	path := rest[0]
 
 	mapW, mapH := parseMapSize(f.mapSize)
-
-	res, err := analyze.Analyze(context.Background(), path, analyze.Options{
+	opt := analyze.Options{
 		MaxBytes:     f.maxBytes,
 		StringsMin:   f.stringsMin,
 		AllowSpecial: f.allowSpecial,
-	}, nil)
-	if err != nil {
-		if errors.Is(err, analyze.ErrNotReadable) {
+	}
+	color := !f.noColor && os.Getenv("NO_COLOR") == ""
+
+	// Interactive TUI is the default when we have a terminal and no output mode
+	// was requested.
+	if !f.noTUI && !f.jsonOut && isTTY(stdout) && isTTY(os.Stdin) && path != "-" {
+		if err := tui.Run(path, opt, color); err != nil {
 			fmt.Fprintf(stderr, "susfile: %v\n", err)
 			return 1
 		}
+		return 0
+	}
+
+	res, err := analyze.Analyze(context.Background(), path, opt, nil)
+	if err != nil {
 		fmt.Fprintf(stderr, "susfile: %v\n", err)
 		return 1
 	}
@@ -91,10 +100,7 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return 0
 	}
 
-	// The TUI lands in feature/tui; until then every mode renders the plain
-	// report.
-	color := !f.noColor && os.Getenv("NO_COLOR") == "" && isTTY(stdout)
-	report.Plain(stdout, res, report.Options{Color: color, MapW: mapW, MapH: mapH})
+	report.Plain(stdout, res, report.Options{Color: color && isTTY(stdout), MapW: mapW, MapH: mapH})
 	return 0
 }
 

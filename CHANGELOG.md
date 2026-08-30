@@ -43,3 +43,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `susfile <file>` CLI: `--no-tui`, `--json`, `--strings-min`, `--max-bytes`,
   `--map-size`, `--allow-special`, `--no-color`, and `-` for stdin.
 - `docs/analysis.md` (the classifier spec) and `docs/architecture.md`.
+- Interactive TUI (`internal/tui`, Bubble Tea): a logo box and a label/value
+  info box on top, the classified **file map** filling the lower half with a
+  movable inspector cursor, secondary Tab views (windowed entropy chart, byte
+  histogram, scrollable hex dump, extracted-strings list), and a footer with a
+  live progress bar and the `⟦THUGS⟧ (c) 2026` stamp on every frame. Colour
+  follows the terminal and `NO_COLOR` / `--no-color`; below 80×24 it shows a
+  resize prompt. `susfile <file>` launches it by default when a terminal is
+  attached. `docs/tui.md`.
