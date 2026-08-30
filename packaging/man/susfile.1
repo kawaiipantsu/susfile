@@ -1,0 +1,85 @@
+.TH SUSFILE 1 "2026" "susfile" "User Commands"
+.SH NAME
+susfile \- CLI file-forensics visualiser
+.SH SYNOPSIS
+.B susfile
+[\fIflags\fR]
+.I file
+.br
+.B susfile
+.B version
+.SH DESCRIPTION
+.B susfile
+reads a single file and shows what it is: magic header, MIME and detected type,
+size and timestamps, MD5/SHA\-1/SHA\-256, ELF/PE/Mach\-O structure, Shannon
+entropy and ent\-style statistics.
+.PP
+Its centrepiece is a
+.IR "file map" :
+the whole file drawn as a grid of block cells where the glyph names the content
+class found in that region (source, printable text, machine code, compressed,
+encrypted, padding and so on) and the colour encodes the region's entropy.
+.PP
+With no flags and a terminal on standard output,
+.B susfile
+launches an interactive TUI. Otherwise it prints a plain text report.
+.PP
+.B susfile
+makes no network connections and sends no telemetry.
+.SH OPTIONS
+.TP
+.B \-\-no\-tui
+Print a plain text report instead of launching the TUI.
+.TP
+.B \-\-json
+Emit a machine\-readable JSON report on standard output.
+.TP
+.BI \-\-strings\-min " N"
+Minimum length for an extracted string. Default 4.
+.TP
+.BI \-\-max\-bytes " N"
+Cap how many bytes are read for the full\-buffer analysis passes. Default
+268435456 (256 MiB). Hashing and the global entropy pass always stream.
+.TP
+.BI \-\-map\-size " WxH"
+Grid size for the plain\-mode ASCII class map. Default 64x16.
+.TP
+.B \-\-allow\-special
+Permit analysing non\-regular files such as devices or FIFOs.
+.TP
+.B \-\-no\-color
+Disable colour output. Also honoured via the
+.B NO_COLOR
+environment variable.
+.TP
+.BR version ", " \-\-version ", " \-V
+Print build metadata and exit.
+.TP
+.BR help ", " \-\-help ", " \-h
+Print usage and exit.
+.SH EXIT STATUS
+.TP
+.B 0
+Analysis completed.
+.TP
+.B 1
+The file could not be read.
+.TP
+.B 2
+Usage error.
+.SH EXAMPLES
+.TP
+Inspect a binary in the TUI:
+.B susfile /usr/bin/ls
+.TP
+Scriptable report:
+.B susfile \-\-json ./firmware.bin | jq .verdict
+.TP
+Read from standard input:
+.B cat blob | susfile \-
+.SH AUTHOR
+kawaiipantsu / THUGS. Source at https://github.com/kawaiipantsu/susfile
+.SH SEE ALSO
+.BR file (1),
+.BR xxd (1),
+.BR ent (1)

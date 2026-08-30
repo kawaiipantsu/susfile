@@ -18,3 +18,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (golangci-lint) and `Vulnerability scan` (govulncheck) on every push and PR;
   a **Branch flow** check that fails a PR opened against the wrong base.
 - `susfile version` entry point with build metadata.
+- Packaging: `make dist` produces a `.tar.gz` per Linux arch plus `SHA256SUMS`;
+  `make deb` produces four `.deb` packages (`amd64`, `i386`, `arm64`, `armhf`)
+  via `dpkg-deb` with a man page, DEP-5 copyright and a Debian changelog. No
+  `Depends` — the binary is static.
+- `make release-check` verifies a clean tree, a matching changelog heading, a
+  free tag and cross-compilation to all four targets.
+- `Release` workflow: a `v*` tag builds every archive and package and publishes
+  a GitHub release with `SHA256SUMS` attached.
+- `install.sh`: arch-detecting installer that verifies the download against
+  `SHA256SUMS` and never calls `sudo`.
+- `susfile.1` man page; `docs/packaging.md`.

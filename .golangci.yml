@@ -17,6 +17,12 @@ linters:
     - unused
 
   settings:
+    errcheck:
+      # Writes to stdout/stderr via fmt.Fprint* are not worth checking in a CLI.
+      exclude-functions:
+        - fmt.Fprint
+        - fmt.Fprintf
+        - fmt.Fprintln
     revive:
       rules:
         - name: exported

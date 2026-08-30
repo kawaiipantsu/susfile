@@ -1,0 +1,21 @@
+Package: susfile
+Version: @VERSION@
+Architecture: @ARCH@
+Section: utils
+Priority: optional
+Maintainer: kawaiipantsu <12233528+kawaiipantsu@users.noreply.github.com>
+Homepage: https://github.com/kawaiipantsu/susfile
+Installed-Size: 8192
+Description: CLI file-forensics visualiser
+ susfile reads one file and shows what it is: magic header, MIME and detected
+ type, size and timestamps, MD5/SHA-1/SHA-256, ELF/PE/Mach-O structure, Shannon
+ entropy and ent-style statistics.
+ .
+ Its centrepiece is a "file map": the whole file drawn as a grid of block cells
+ where the glyph names the content class found in that region (source, printable
+ text, machine code, compressed, encrypted, padding, ...) and the colour encodes
+ the region's entropy. Packers, appended payloads and embedded archives stand
+ out at a glance.
+ .
+ susfile is a single static binary. It makes no network connections and sends no
+ telemetry.
