@@ -1,6 +1,8 @@
 <div align="center">
 
-# `susfile`
+<img src="assets/logo/susfile_logo.png" alt="susfile — forensic file analysis tool" width="360"/>
+
+# susfile
 
 **A CLI file-forensics visualiser — see what a file *is* at a glance.**
 
@@ -23,11 +25,12 @@ Magic header · MIME & type · entropy · hashes · ELF/PE/Mach-O structure — 
 
 <br/>
 
-> [!IMPORTANT]
-> **susfile is in early development.** The analysis engine and the interactive
-> TUI both work today — `susfile <file>` for the TUI, `susfile --no-tui` /
-> `--json` for scripts. What remains before v0.1.0 is release hardening and a
-> tagged build with `.deb` packages. Follow the [roadmap](#roadmap).
+> [!NOTE]
+> **v0.1.1 is out** — [release](https://github.com/kawaiipantsu/susfile/releases/tag/v0.1.1)
+> with static Linux binaries and `.deb` packages for `amd64` / `i386` / `arm64` /
+> `armhf`. It is a young tool: the block classifier and the verdict are
+> heuristics (see [`docs/analysis.md`](docs/analysis.md) and the
+> [known limitations](CHANGELOG.md)). Ideas and bug reports very welcome.
 
 <br/>
 
@@ -130,7 +133,7 @@ curl -fsSL https://raw.githubusercontent.com/kawaiipantsu/susfile/main/install.s
 
 Detects your arch, verifies the download against `SHA256SUMS`, installs to
 `~/.local/bin` (or `/usr/local/bin` if writable). Never calls `sudo`. Pin a
-version with `SUSFILE_VERSION=v0.1.0`.
+version with `SUSFILE_VERSION=v0.1.1`.
 
 ### 📦 Debian / Ubuntu
 
@@ -246,7 +249,8 @@ make security                # govulncheck when installed
 | 7 | TUI shell (logo / info box / footer + THUGS stamp) | ✅ done |
 | 8 | **File-map main panel** + inspector | ✅ done |
 | 9 | Entropy / histogram / hex / strings Tab views | ✅ done |
-| 10 | v0.1.0 release hardening + GitHub release with `.deb` | ⬜ next |
+| 10 | **v0.1.0 / v0.1.1** — tagged, four `.tar.gz` + four `.deb` + `SHA256SUMS` | ✅ [released](https://github.com/kawaiipantsu/susfile/releases/latest) |
+| — | Next: classifier tuning, byteplot view, compare mode — see [issues](https://github.com/kawaiipantsu/susfile/issues?q=label%3Atype%3Aidea) | ⬜ |
 
 </div>
 
