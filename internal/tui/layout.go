@@ -29,7 +29,7 @@ func computeLayout(w, h int) layout {
 		return l
 	}
 
-	l.logoW = 14
+	l.logoW = 24
 	l.topH = 10
 	if half := h / 2; l.topH > half {
 		l.topH = half

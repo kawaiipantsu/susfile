@@ -1,6 +1,7 @@
- ___
-(o o)   s u s f i l e
-/  V \   the file, drawn
-------
- F P C   S Z E
- · R H   M D
+   ______
+  / (~~) \        s u s f i l e
+ | (~~~~) |       forensic file analysis tool
+ | (~~~~) |
+  \ (~~) /        -==[ 0x53 0x55 0x53 ]==-
+   \____/\
+         \\
