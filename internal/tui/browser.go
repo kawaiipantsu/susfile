@@ -322,7 +322,7 @@ func (m Model) renderBrowser(l layout) string {
 		out = append(out, row)
 	}
 
-	out = append(out, t.value.Render(clipVisible(m.browserInfoLine(w), w)))
+	out = append(out, t.value.Render(clipVisible(m.browserInfoLine(), w)))
 	legend := "  ⏎ open   → enter   ← up   . hidden   ~ home   / root   esc cancel"
 	out = append(out, t.dim.Render(clipVisible(legend, w)))
 
@@ -334,7 +334,8 @@ func (m Model) renderBrowser(l layout) string {
 
 // browserInfoLine is the Midnight-Commander-style status line under the list:
 // the selected entry's full path, mode, size and mtime (or a transient note).
-func (m Model) browserInfoLine(w int) string {
+// The caller clips it to the panel width.
+func (m Model) browserInfoLine() string {
 	b := m.browser
 	if b.msg != "" {
 		return "  " + b.msg
