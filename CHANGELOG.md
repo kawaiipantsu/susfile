@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-08-31
+
 ### Changed
 
 - **`susfile` with no `<file>` now opens the TUI file picker** instead of exiting
@@ -115,7 +117,8 @@ connections, and sends no telemetry.
 - **`.deb` packages are unsigned**; verify downloads against `SHA256SUMS`.
 - **Linux only.** macOS and Windows are not release targets.
 
-[Unreleased]: https://github.com/kawaiipantsu/susfile/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/kawaiipantsu/susfile/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/kawaiipantsu/susfile/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/kawaiipantsu/susfile/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/kawaiipantsu/susfile/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/kawaiipantsu/susfile/releases/tag/v0.1.0
