@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **`susfile` with no `<file>` now opens the TUI file picker** instead of exiting
+  with a usage error. The picker starts rooted at the working directory and
+  nothing is analysed until a file is chosen; with nothing loaded, `Esc` / `q`
+  quit. In non-interactive modes (`--no-tui`, `--json`, no TTY) a missing
+  `<file>` is still an error (exit 2). Passing more than one path now says "at
+  most one" rather than "exactly one".
+
 ## [0.2.0] - 2026-08-31
 
 ### Added

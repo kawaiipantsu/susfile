@@ -21,11 +21,16 @@ func hintsFor(v view) []keyHint {
 	}
 }
 
-// browseHints is the footer legend while the file picker is open.
-func browseHints() []keyHint {
+// browseHints is the footer legend while the file picker is open. With no file
+// loaded yet, Esc quits rather than returning to a previous view.
+func browseHints(noFile bool) []keyHint {
+	last := keyHint{"esc", "cancel"}
+	if noFile {
+		last = keyHint{"esc", "quit"}
+	}
 	return []keyHint{
 		{"↑↓", "move"}, {"⏎", "open"}, {"→←", "dir"},
-		{".", "hidden"}, {"~", "home"}, {"esc", "cancel"},
+		{".", "hidden"}, {"~", "home"}, last,
 	}
 }
 

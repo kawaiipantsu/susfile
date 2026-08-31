@@ -4,7 +4,7 @@ susfile \- CLI file-forensics visualiser
 .SH SYNOPSIS
 .B susfile
 [\fIflags\fR]
-.I file
+[\fIfile\fR]
 .br
 .B susfile
 .B version
@@ -23,6 +23,12 @@ encrypted, padding and so on) and the colour encodes the region's entropy.
 With no flags and a terminal on standard output,
 .B susfile
 launches an interactive TUI. Otherwise it prints a plain text report.
+Called with no
+.I file
+argument in a terminal, it opens the TUI with its filesystem picker ready so a
+file can be chosen; with no terminal a missing
+.I file
+is an error.
 .PP
 .B susfile
 makes no network connections and sends no telemetry.

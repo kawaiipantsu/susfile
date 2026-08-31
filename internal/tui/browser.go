@@ -323,7 +323,11 @@ func (m Model) renderBrowser(l layout) string {
 	}
 
 	out = append(out, t.value.Render(clipVisible(m.browserInfoLine(), w)))
-	legend := "  ⏎ open   → enter   ← up   . hidden   ~ home   / root   esc cancel"
+	exit := "esc cancel"
+	if m.hasNoFile() {
+		exit = "esc quit"
+	}
+	legend := "  ⏎ open   → enter   ← up   . hidden   ~ home   / root   " + exit
 	out = append(out, t.dim.Render(clipVisible(legend, w)))
 
 	for len(out) < l.mainH {

@@ -166,10 +166,14 @@ CLI. `Esc`/`q` close the picker; `Ctrl-C` quits. The picker only lists
 directories and stats entries — it performs no file operations, so susfile stays
 "not a file manager" (§10).
 
+Running `susfile` with no `<file>` opens straight into the picker (rooted at the
+working directory) and analyses nothing until a file is chosen; with nothing
+loaded yet, `Esc`/`q` quit outright.
+
 ## 8. CLI
 
 ```
-susfile [flags] <file>
+susfile [flags] [file]
 susfile version | --version | -V
 susfile help | --help | -h
 ```
@@ -185,7 +189,10 @@ susfile help | --help | -h
 | `--no-color` | auto | disable colour (also honours `NO_COLOR`) |
 
 `<file>` of `-` reads stdin into a bounded buffer. TUI is the default when stdout
-is a TTY and a file is given; otherwise plain mode.
+and stdin are TTYs and `<file>` is not `-`; otherwise plain mode. Omitting
+`<file>` launches the TUI with the file picker (§7.1) already open and analyses
+nothing until a file is chosen; in every non-interactive mode a missing `<file>`
+is an error (exit 2).
 
 ## 9. Build & release
 
