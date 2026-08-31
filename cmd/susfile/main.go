@@ -61,12 +61,19 @@ func run(args []string, stdout, stderr io.Writer) int {
 	}
 
 	rest := fs.Args()
-	if len(rest) != 1 {
-		fmt.Fprintln(stderr, "susfile: expected exactly one <file> argument (use - for stdin)")
+	var path string
+	switch len(rest) {
+	case 0:
+		// No file given: fall through with an empty path. The interactive TUI
+		// opens its file picker; every non-interactive mode reports the error
+		// after the TUI check below.
+	case 1:
+		path = rest[0]
+	default:
+		fmt.Fprintln(stderr, "susfile: expected at most one <file> argument (use - for stdin)")
 		fmt.Fprint(stderr, usageText)
 		return 2
 	}
-	path := rest[0]
 
 	mapW, mapH := parseMapSize(f.mapSize)
 	opt := analyze.Options{
@@ -77,13 +84,19 @@ func run(args []string, stdout, stderr io.Writer) int {
 	color := !f.noColor && os.Getenv("NO_COLOR") == ""
 
 	// Interactive TUI is the default when we have a terminal and no output mode
-	// was requested.
+	// was requested. With no file argument it opens the file picker.
 	if !f.noTUI && !f.jsonOut && isTTY(stdout) && isTTY(os.Stdin) && path != "-" {
 		if err := tui.Run(path, opt, color); err != nil {
 			fmt.Fprintf(stderr, "susfile: %v\n", err)
 			return 1
 		}
 		return 0
+	}
+
+	if path == "" {
+		fmt.Fprintln(stderr, "susfile: no <file> given (the picker needs an interactive terminal; use - for stdin)")
+		fmt.Fprint(stderr, usageText)
+		return 2
 	}
 
 	res, err := analyze.Analyze(context.Background(), path, opt, nil)
@@ -131,7 +144,8 @@ func isTTY(w io.Writer) bool {
 const usageText = `susfile — CLI file-forensics visualiser
 
 Usage:
-  susfile [flags] <file>      analyse a file (use - for stdin)
+  susfile [flags] [file]      analyse a file (use - for stdin);
+                              omit <file> to open the TUI file picker
   susfile version             print build metadata
 
 Flags:

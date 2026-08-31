@@ -191,6 +191,7 @@ make help
 
 ```bash
 susfile <file>                # interactive TUI — the file map
+susfile                       # no file? opens the TUI file picker
 susfile --no-tui <file>       # plain text report + ASCII class-map
 susfile --json <file>         # machine-readable report (microblocks, legend, stats)
 susfile version               # build metadata
@@ -210,11 +211,11 @@ cat blob | susfile -          # read from stdin
 that offset in Hex · `PgUp/PgDn/g/G` scroll · `o` open the file picker · `r`
 rescan · `q` quit.
 
-**File picker (`o`):** a Midnight-Commander-style filesystem browser opens in the
-main panel — walk directories (`↑↓`, `→`/`enter` to descend, `←` for the parent,
-`~`/`/` for home/root, `.` toggles dotfiles), read each entry's path, mode, size
-and mtime, and press `enter` on a regular file to analyse it in place. It only
-reads — no file operations.
+**File picker (`o`, or run `susfile` with no file):** a Midnight-Commander-style
+filesystem browser opens in the main panel — walk directories (`↑↓`, `→`/`enter`
+to descend, `←` for the parent, `~`/`/` for home/root, `.` toggles dotfiles),
+read each entry's path, mode, size and mtime, and press `enter` on a regular
+file to analyse it in place. It only reads — no file operations.
 
 <br/>
 

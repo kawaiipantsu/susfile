@@ -16,6 +16,11 @@ func (m Model) renderInfo(w, h int) string {
 	}
 
 	if m.res == nil {
+		if m.hasNoFile() {
+			add("Path", "—")
+			add("Status", "waiting for a file — browse and press ⏎")
+			return fitBox(rows, w, h)
+		}
 		add("Path", m.path)
 		add("Status", m.stageText()+" …")
 		return fitBox(rows, w, h)

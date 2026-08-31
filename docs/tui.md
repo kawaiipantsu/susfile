@@ -40,7 +40,10 @@ is drawn on every frame, right-aligned.
 ## File picker (`o`)
 
 `o` opens a Midnight-Commander-style filesystem browser in the main panel (the
-logo and info boxes stay put). It is a single panel:
+logo and info boxes stay put). Running `susfile` with **no file argument** opens
+straight into it, rooted at the working directory — nothing is analysed until
+you pick a file, and with nothing loaded `Esc` / `q` quit outright. It is a
+single panel:
 
 ```
  /home/user/projects                                            42 items
