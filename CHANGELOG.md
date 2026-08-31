@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **File picker in the TUI.** Press `o` to open a Midnight-Commander-style
+  filesystem browser in the main panel: `..`-first listing, directories before
+  files, `name / size / mtime` columns, a per-entry info line (full path, mode,
+  size, mtime), symlinks resolved to their target's type, and a dotfile toggle
+  (`.`). `↑↓` / `PgUp` `PgDn` / `g` `G` move, `→` / `Enter` enters a directory,
+  `←` / `Backspace` goes up, `~` and `/` jump to `$HOME` and the filesystem
+  root. `Enter` on a regular file re-runs the whole analysis on it — map, hex
+  buffer, info box and verdict all refresh. Non-regular files are refused unless
+  `--allow-special`, matching the CLI. `Esc` / `q` close the picker; `Ctrl-C`
+  still quits. The browser only lists and stats — it never touches the
+  filesystem. (#42)
+
 ## [0.1.1] - 2026-08-31
 
 ### Changed

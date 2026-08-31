@@ -152,6 +152,20 @@ messages. Below **80×24** the TUI renders only a centred resize prompt. On
 `WindowSizeMsg` the map re-aggregates from the cached micro-blocks — the file is
 not re-read.
 
+### 7.1 File picker
+
+`o` opens a filesystem browser in the **Main** region (the logo and info boxes
+and the footer stay). It is a single Midnight-Commander-style panel: `..` first,
+then directories, then files (case-insensitive); `name / size / mtime` columns; a
+highlighted cursor row; an info line for the selected entry (full path, mode,
+size, mtime); a dotfile toggle (`.`). `↑↓ PgUp PgDn g G` move, `→`/`⏎` enters a
+directory, `←`/`Backspace` goes up, `~` `$HOME`, `/` the root. `⏎` on a **regular
+file** re-runs `analyze.Analyze` on it and every derived field (map, hex buffer,
+info box, verdict) refreshes; non-regular files need `--allow-special`, as on the
+CLI. `Esc`/`q` close the picker; `Ctrl-C` quits. The picker only lists
+directories and stats entries — it performs no file operations, so susfile stays
+"not a file manager" (§10).
+
 ## 8. CLI
 
 ```
@@ -194,4 +208,5 @@ is a TTY and a file is given; otherwise plain mode.
 Disassembly · editing / patching files · signature-based malware detection ·
 recursive archive extraction · any network feature (hash lookups, reputation,
 update checks, telemetry) · a config file or persistent state · Windows/macOS
-release artifacts · a plugin marketplace.
+release artifacts · a plugin marketplace · file operations in the TUI picker —
+it only navigates the filesystem to choose the single input (§7.1).
