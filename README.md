@@ -258,7 +258,7 @@ make security                # govulncheck when installed
 | 8 | **File-map main panel** + inspector | ✅ done |
 | 9 | Entropy / histogram / hex / strings Tab views | ✅ done |
 | 10 | **v0.1.0 / v0.1.1** — tagged, four `.tar.gz` + four `.deb` + `SHA256SUMS` | ✅ [released](https://github.com/kawaiipantsu/susfile/releases/latest) |
-| 11 | **File picker** (`o`) — Midnight-Commander-style filesystem browser | ✅ done |
+| 11 | **File picker** (`o`) — Midnight-Commander-style filesystem browser | ✅ **v0.2.0** |
 | — | Next: classifier tuning, byteplot view, compare mode — see [issues](https://github.com/kawaiipantsu/susfile/issues?q=label%3Atype%3Aidea) | ⬜ |
 
 </div>

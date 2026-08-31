@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-08-31
+
 ### Added
 
 - **File picker in the TUI.** Press `o` to open a Midnight-Commander-style
@@ -104,6 +106,7 @@ connections, and sends no telemetry.
 - **`.deb` packages are unsigned**; verify downloads against `SHA256SUMS`.
 - **Linux only.** macOS and Windows are not release targets.
 
-[Unreleased]: https://github.com/kawaiipantsu/susfile/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/kawaiipantsu/susfile/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/kawaiipantsu/susfile/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/kawaiipantsu/susfile/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/kawaiipantsu/susfile/releases/tag/v0.1.0
