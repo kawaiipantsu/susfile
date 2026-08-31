@@ -22,6 +22,25 @@ func spaces(n int) string {
 	return string(b)
 }
 
+// dispWidth is the number of terminal cells s occupies (ANSI-aware).
+func dispWidth(s string) int { return lipgloss.Width(s) }
+
+// padRight pads s with spaces to w display cells (no-op if already wider).
+func padRight(s string, w int) string {
+	if n := w - dispWidth(s); n > 0 {
+		return s + spaces(n)
+	}
+	return s
+}
+
+// padLeft right-aligns s within w display cells (no-op if already wider).
+func padLeft(s string, w int) string {
+	if n := w - dispWidth(s); n > 0 {
+		return spaces(n) + s
+	}
+	return s
+}
+
 func clampInt(v, lo, hi int) int {
 	if v < lo {
 		return lo

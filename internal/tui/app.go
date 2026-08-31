@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/progress"
@@ -72,6 +73,9 @@ type Model struct {
 
 	hexTop int
 	strTop int
+
+	browsing bool    // the file picker has taken over the main panel
+	browser  browser // file-picker state (survives closing the picker)
 }
 
 // Run analyses path and shows the TUI until the user quits.
@@ -212,6 +216,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) handleKey(k tea.KeyMsg) (tea.Model, tea.Cmd) {
+	if m.browsing {
+		return m.handleBrowseKey(k)
+	}
 	if isQuit(k) {
 		return m, tea.Quit
 	}
@@ -222,6 +229,8 @@ func (m Model) handleKey(k tea.KeyMsg) (tea.Model, tea.Cmd) {
 		m.view = (m.view + numViews - 1) % numViews
 	case "r":
 		return m.rescan()
+	case "o":
+		return m.openBrowser(), nil
 	}
 
 	switch m.view {
@@ -285,6 +294,94 @@ func (m Model) rescan() (tea.Model, tea.Cmd) {
 	}
 }
 
+// openBrowser opens the file picker on the directory holding the current file
+// (or the working directory when there is no real path yet).
+func (m Model) openBrowser() Model {
+	start := m.path
+	if start == "" || start == "-" {
+		if wd, err := os.Getwd(); err == nil {
+			start = wd
+		} else {
+			start = "."
+		}
+	}
+	m.browser = newBrowser(filepath.Dir(start), m.browser.showHidden)
+	m.browsing = true
+	return m
+}
+
+// handleBrowseKey drives the file picker. Esc/q close it; Ctrl-C still quits;
+// Enter on a regular file hands it to openPath.
+func (m Model) handleBrowseKey(k tea.KeyMsg) (tea.Model, tea.Cmd) {
+	b := &m.browser
+	visible := m.lay.mainH - 3
+	switch k.String() {
+	case "ctrl+c":
+		return m, tea.Quit
+	case "esc", "q", "o":
+		m.browsing = false
+	case "up", "k":
+		b.move(-1, visible)
+	case "down", "j":
+		b.move(1, visible)
+	case "pgup":
+		b.move(-(visible - 1), visible)
+	case "pgdown", " ":
+		b.move(visible-1, visible)
+	case "home", "g":
+		b.move(-len(b.entries), visible)
+	case "end", "G":
+		b.move(len(b.entries), visible)
+	case "left", "backspace", "h":
+		b.parent()
+	case "right", "l":
+		b.enter()
+	case ".":
+		b.toggleHidden()
+	case "~":
+		if home, err := os.UserHomeDir(); err == nil {
+			b.navigate(home)
+		}
+	case "/":
+		b.navigate(string(filepath.Separator))
+	case "enter":
+		e, ok := b.selected()
+		if !ok {
+			break
+		}
+		switch {
+		case e.isParent() || e.isDir:
+			b.enter()
+		case e.analyzable(m.opt.AllowSpecial):
+			return m.openPath(filepath.Join(b.dir, e.name))
+		default:
+			b.msg = "not a regular file — relaunch with --allow-special to inspect it"
+		}
+	}
+	return m, nil
+}
+
+// openPath swaps the analysed file for path: it clears every derived field and
+// returns the commands that re-run analysis and reload the hex buffer.
+func (m Model) openPath(path string) (tea.Model, tea.Cmd) {
+	m.path = path
+	m.res, m.err = nil, nil
+	m.raw = nil
+	m.stage, m.frac = analyze.StageOpen, 0
+	m.cells = nil
+	m.cur, m.hexTop, m.strTop = 0, 0, 0
+	m.browsing = false
+	m.view = viewMap
+	opt := m.opt
+	return m, tea.Batch(
+		func() tea.Msg {
+			res, err := analyze.Analyze(context.Background(), path, opt, nil)
+			return doneMsg{res, err}
+		},
+		func() tea.Msg { return rawMsg{loadRaw(path, opt)} },
+	)
+}
+
 // View renders one frame: logo + info box, the tab bar, the active panel, and
 // the footer with progress and the ⟦THUGS⟧ (c) 2026 stamp.
 func (m Model) View() string {
@@ -304,34 +401,42 @@ func (m Model) View() string {
 	infoBox := t.border.Width(infoW - 2).Height(l.topH - 2).Render(m.renderInfo(infoW-2, l.topH-2))
 	top := lipgloss.JoinHorizontal(lipgloss.Top, logoBox, infoBox)
 
-	// Tab bar.
-	var tabs strings.Builder
-	for v := view(0); v < numViews; v++ {
-		if v == m.view {
-			tabs.WriteString(t.tabOn.Render(v.title()))
-		} else {
-			tabs.WriteString(t.tabOff.Render(v.title()))
+	// Tab bar — or, while the file picker is open, a picker banner.
+	var tabLine string
+	if m.browsing {
+		tabLine = t.tabOn.Render("Pick file") + " " + t.dim.Render(clip(m.browser.dir, m.w-14))
+	} else {
+		var tabs strings.Builder
+		for v := view(0); v < numViews; v++ {
+			if v == m.view {
+				tabs.WriteString(t.tabOn.Render(v.title()))
+			} else {
+				tabs.WriteString(t.tabOff.Render(v.title()))
+			}
+			tabs.WriteString(" ")
 		}
-		tabs.WriteString(" ")
+		tabLine = tabs.String()
 	}
 
-	// Main panel.
+	// Main panel — the active view, or the file picker when it is open.
 	var body string
-	switch m.view {
-	case viewMap:
-		body = m.renderMap(l)
-	case viewEntropy:
+	switch {
+	case m.browsing:
+		body = m.renderBrowser(l)
+	case m.view == viewEntropy:
 		body = m.renderEntropyView(l)
-	case viewHistogram:
+	case m.view == viewHistogram:
 		body = m.renderHistogramView(l)
-	case viewHex:
+	case m.view == viewHex:
 		body = m.renderHexView(l)
-	case viewStrings:
+	case m.view == viewStrings:
 		body = m.renderStringsView(l)
+	default:
+		body = m.renderMap(l)
 	}
 	mainBox := t.border.Width(l.mainW).Height(l.mainH).Render(body)
 
 	footer := m.renderFooter(m.w)
 
-	return strings.Join([]string{top, clipVisible(tabs.String(), m.w), mainBox, footer}, "\n")
+	return strings.Join([]string{top, clipVisible(tabLine, m.w), mainBox, footer}, "\n")
 }

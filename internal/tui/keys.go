@@ -10,7 +10,7 @@ type keyHint struct {
 
 // hintsFor returns the context-sensitive key hints for a view.
 func hintsFor(v view) []keyHint {
-	common := []keyHint{{"tab", "view"}, {"r", "rescan"}, {"q", "quit"}}
+	common := []keyHint{{"tab", "view"}, {"o", "open"}, {"r", "rescan"}, {"q", "quit"}}
 	switch v {
 	case viewMap:
 		return append([]keyHint{{"↑↓←→", "inspect"}, {"enter", "hex here"}}, common...)
@@ -18,6 +18,14 @@ func hintsFor(v view) []keyHint {
 		return append([]keyHint{{"↑↓", "scroll"}, {"pgup/pgdn", "page"}, {"g/G", "top/end"}}, common...)
 	default:
 		return common
+	}
+}
+
+// browseHints is the footer legend while the file picker is open.
+func browseHints() []keyHint {
+	return []keyHint{
+		{"↑↓", "move"}, {"⏎", "open"}, {"→←", "dir"},
+		{".", "hidden"}, {"~", "home"}, {"esc", "cancel"},
 	}
 }
 
