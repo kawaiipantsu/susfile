@@ -14,7 +14,7 @@ func (m Model) renderFooter(w int) string {
 
 	legend := hintsFor(m.view)
 	if m.browsing {
-		legend = browseHints()
+		legend = browseHints(m.hasNoFile())
 	}
 
 	var hints strings.Builder
@@ -30,7 +30,9 @@ func (m Model) renderFooter(w int) string {
 	stampW := lipgloss.Width(stamp)
 
 	var status string
-	if m.res == nil && m.err == nil {
+	if m.hasNoFile() {
+		status = t.dim.Render("no file yet · pick one from the browser")
+	} else if m.res == nil && m.err == nil {
 		status = m.spin.View() + " " + t.value.Render(m.stageText()) + " " + m.prog.ViewAs(m.frac)
 	} else if m.err != nil {
 		status = t.warnText.Render("analysis failed: " + m.err.Error())

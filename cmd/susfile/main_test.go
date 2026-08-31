@@ -18,12 +18,24 @@ func TestRunVersion(t *testing.T) {
 	}
 }
 
-func TestRunNoArgs(t *testing.T) {
+func TestRunNoArgsNonInteractive(t *testing.T) {
+	// stdout here is a bytes.Buffer, not a TTY, so the picker cannot open and
+	// a missing <file> is an error rather than a launch.
 	var out, errb bytes.Buffer
 	if code := run(nil, &out, &errb); code != 2 {
 		t.Fatalf("exit %d, want 2", code)
 	}
-	if !strings.Contains(errb.String(), "exactly one") {
+	if !strings.Contains(errb.String(), "no <file> given") {
+		t.Errorf("stderr = %q", errb.String())
+	}
+}
+
+func TestRunTooManyArgs(t *testing.T) {
+	var out, errb bytes.Buffer
+	if code := run([]string{"a", "b"}, &out, &errb); code != 2 {
+		t.Fatalf("exit %d, want 2", code)
+	}
+	if !strings.Contains(errb.String(), "at most one") {
 		t.Errorf("stderr = %q", errb.String())
 	}
 }

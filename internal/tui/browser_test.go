@@ -197,6 +197,64 @@ func TestBrowserRefusesDirectoryOnEnter(t *testing.T) {
 	}
 }
 
+func TestNoFileStartsInBrowserAndEscQuits(t *testing.T) {
+	m := Model{theme: newTheme(false)}
+	m = m.openBrowser()
+	if !m.browsing {
+		t.Fatal("openBrowser did not enter browsing mode")
+	}
+	if !m.hasNoFile() {
+		t.Fatal("a model with no path and no result should report hasNoFile")
+	}
+
+	nm, _ := m.Update(tea.WindowSizeMsg{Width: 100, Height: 30})
+	m = nm.(Model)
+
+	out := m.View()
+	if !strings.Contains(out, "Pick file") {
+		t.Errorf("no-file launch should render the picker:\n%s", out)
+	}
+	if !strings.Contains(out, "esc quit") {
+		t.Errorf("legend should read 'esc quit' with nothing loaded:\n%s", out)
+	}
+
+	_, cmd := m.handleKey(tea.KeyMsg{Type: tea.KeyEsc})
+	if cmd == nil {
+		t.Fatal("esc with no file loaded should quit")
+	}
+	if _, ok := cmd().(tea.QuitMsg); !ok {
+		t.Error("esc with no file loaded should emit tea.QuitMsg")
+	}
+}
+
+func TestNoFilePickClearsNoFileState(t *testing.T) {
+	dir := t.TempDir()
+	target := filepath.Join(dir, "chosen.dat")
+	mustW(t, os.WriteFile(target, []byte(strings.Repeat("ab", 200)), 0o644))
+
+	m := Model{theme: newTheme(false)}
+	m = m.openBrowser()
+	nm, _ := m.Update(tea.WindowSizeMsg{Width: 100, Height: 30})
+	m = nm.(Model)
+
+	m.browser = newBrowser(dir, false)
+	if !selectName(&m.browser, "chosen.dat") {
+		t.Fatal("target not listed")
+	}
+	nm, cmd := m.handleKey(tea.KeyMsg{Type: tea.KeyEnter})
+	m = nm.(Model)
+
+	if m.hasNoFile() {
+		t.Error("choosing a file should clear the no-file state")
+	}
+	if m.path != target {
+		t.Errorf("path = %q, want %q", m.path, target)
+	}
+	if !drainHasDone(cmd) {
+		t.Error("choosing a file should start an analysis")
+	}
+}
+
 func TestBrowserViewKeepsStamp(t *testing.T) {
 	m := readyModel(t, []byte(strings.Repeat("x", 300)))
 	m.path = filepath.Join(t.TempDir(), "f")

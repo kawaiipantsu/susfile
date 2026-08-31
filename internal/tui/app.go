@@ -78,7 +78,9 @@ type Model struct {
 	browser  browser // file-picker state (survives closing the picker)
 }
 
-// Run analyses path and shows the TUI until the user quits.
+// Run shows the TUI until the user quits. When path is empty it starts in the
+// file picker and analyses nothing until the user chooses a file; otherwise it
+// analyses path immediately.
 func Run(path string, opt analyze.Options, color bool) error {
 	sp := spinner.New()
 	sp.Spinner = spinner.Dot
@@ -91,16 +93,21 @@ func Run(path string, opt analyze.Options, color bool) error {
 		spin:  sp,
 		stage: analyze.StageOpen,
 	}
+	if path == "" {
+		m = m.openBrowser()
+	}
 
 	p := tea.NewProgram(m, tea.WithAltScreen())
 
-	go func() {
-		res, err := analyze.Analyze(context.Background(), path, opt, func(s analyze.Stage, f float64) {
-			p.Send(progressMsg{s, f})
-		})
-		p.Send(doneMsg{res, err})
-	}()
-	go func() { p.Send(rawMsg{loadRaw(path, opt)}) }()
+	if path != "" {
+		go func() {
+			res, err := analyze.Analyze(context.Background(), path, opt, func(s analyze.Stage, f float64) {
+				p.Send(progressMsg{s, f})
+			})
+			p.Send(doneMsg{res, err})
+		}()
+		go func() { p.Send(rawMsg{loadRaw(path, opt)}) }()
+	}
 
 	_, err := p.Run()
 	return err
@@ -294,20 +301,27 @@ func (m Model) rescan() (tea.Model, tea.Cmd) {
 	}
 }
 
-// openBrowser opens the file picker on the directory holding the current file
-// (or the working directory when there is no real path yet).
+// openBrowser opens the file picker on the directory holding the current file,
+// or on the working directory when no file has been chosen yet.
 func (m Model) openBrowser() Model {
-	start := m.path
-	if start == "" || start == "-" {
+	start := "."
+	switch {
+	case m.path != "" && m.path != "-":
+		start = filepath.Dir(m.path)
+	default:
 		if wd, err := os.Getwd(); err == nil {
 			start = wd
-		} else {
-			start = "."
 		}
 	}
-	m.browser = newBrowser(filepath.Dir(start), m.browser.showHidden)
+	m.browser = newBrowser(start, m.browser.showHidden)
 	m.browsing = true
 	return m
+}
+
+// hasNoFile reports that susfile was launched without a file and none has been
+// picked yet — the browser is the whole UI until the user chooses one.
+func (m Model) hasNoFile() bool {
+	return m.path == "" && m.res == nil && m.err == nil
 }
 
 // handleBrowseKey drives the file picker. Esc/q close it; Ctrl-C still quits;
@@ -318,8 +332,15 @@ func (m Model) handleBrowseKey(k tea.KeyMsg) (tea.Model, tea.Cmd) {
 	switch k.String() {
 	case "ctrl+c":
 		return m, tea.Quit
-	case "esc", "q", "o":
+	case "esc", "q":
+		if m.hasNoFile() {
+			return m, tea.Quit // nothing to fall back to
+		}
 		m.browsing = false
+	case "o":
+		if !m.hasNoFile() {
+			m.browsing = false
+		}
 	case "up", "k":
 		b.move(-1, visible)
 	case "down", "j":
