@@ -61,6 +61,7 @@ answer:
 | 🗺️ **File map first** | The main panel is a grid of block cells — one glyph per region. The glyph names what was found (`F` source/functions, `P` printable text, `C` code, `Z` compressed, `E` encrypted, `·` padding…); the colour is the region's entropy/density. Packers, appended payloads, embedded archives and text-in-binary jump out. |
 | 📌 **The facts, compact** | Type, magic bytes, MIME, section count, string count, MD5/SHA-256, global entropy with an inline bar, and a one-glance verdict. |
 | 🔍 **Then drill in** | Tab to a windowed entropy chart, a byte histogram, a scrollable hex dump, or the extracted strings — jump straight to any offset the map made you curious about. |
+| 🗂️ **Pick the next file without leaving** | `o` opens a Midnight-Commander-style filesystem browser in the main panel; walk the tree, read each entry's info, press `enter` on a file to analyse it in place. |
 | 🔒 **Offline, always** | susfile never opens a socket. No hash lookups, no "reputation" calls, no telemetry. What you analyse stays on your machine. |
 | 📦 **Trivial to deploy** | Pure Go, `CGO_ENABLED=0`, static. `linux/amd64`, `linux/386`, `linux/arm64`, `linux/arm` — binaries and `.deb` packages for all four. |
 
@@ -206,7 +207,14 @@ cat blob | susfile -          # read from stdin
 | `--no-color` | Disable colour; use block-shade glyphs |
 
 **TUI keys:** `Tab` cycle views · `↑↓←→` move the map inspector · `enter` jump to
-that offset in Hex · `PgUp/PgDn/g/G` scroll · `r` rescan · `q` quit.
+that offset in Hex · `PgUp/PgDn/g/G` scroll · `o` open the file picker · `r`
+rescan · `q` quit.
+
+**File picker (`o`):** a Midnight-Commander-style filesystem browser opens in the
+main panel — walk directories (`↑↓`, `→`/`enter` to descend, `←` for the parent,
+`~`/`/` for home/root, `.` toggles dotfiles), read each entry's path, mode, size
+and mtime, and press `enter` on a regular file to analyse it in place. It only
+reads — no file operations.
 
 <br/>
 
@@ -250,6 +258,7 @@ make security                # govulncheck when installed
 | 8 | **File-map main panel** + inspector | ✅ done |
 | 9 | Entropy / histogram / hex / strings Tab views | ✅ done |
 | 10 | **v0.1.0 / v0.1.1** — tagged, four `.tar.gz` + four `.deb` + `SHA256SUMS` | ✅ [released](https://github.com/kawaiipantsu/susfile/releases/latest) |
+| 11 | **File picker** (`o`) — Midnight-Commander-style filesystem browser | ✅ done |
 | — | Next: classifier tuning, byteplot view, compare mode — see [issues](https://github.com/kawaiipantsu/susfile/issues?q=label%3Atype%3Aidea) | ⬜ |
 
 </div>

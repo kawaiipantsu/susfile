@@ -12,8 +12,13 @@ import (
 func (m Model) renderFooter(w int) string {
 	t := m.theme
 
+	legend := hintsFor(m.view)
+	if m.browsing {
+		legend = browseHints()
+	}
+
 	var hints strings.Builder
-	for i, hk := range hintsFor(m.view) {
+	for i, hk := range legend {
 		if i > 0 {
 			hints.WriteString("  ")
 		}
